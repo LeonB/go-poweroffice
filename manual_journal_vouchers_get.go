@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/omniboost/go-poweroffice/odata"
 	"github.com/omniboost/go-poweroffice/utils"
 )
 
@@ -35,10 +36,23 @@ type ManualJournalVouchersGet struct {
 }
 
 func (r ManualJournalVouchersGet) NewQueryParams() *ManualJournalVouchersGetQueryParams {
-	return &ManualJournalVouchersGetQueryParams{}
+	selectFields, _ := utils.Fields(&ManualJournalVoucher{})
+	expandFields := []string{}
+	return &ManualJournalVouchersGetQueryParams{
+		Select: odata.NewSelect(selectFields),
+		Expand: odata.NewExpand(expandFields),
+		Filter: odata.NewFilter(),
+		Top:    odata.NewTop(),
+		Skip:   odata.NewSkip(),
+	}
 }
 
 type ManualJournalVouchersGetQueryParams struct {
+	Select *odata.Select `schema:"$select,omitempty"`
+	Expand *odata.Expand `schema:"$expand,omitempty"`
+	Filter *odata.Filter `schema:"$filter,omitempty"`
+	Top    *odata.Top    `schema:"$top,omitempty"`
+	Skip   *odata.Skip   `schema:"$skip,omitempty"`
 }
 
 func (p ManualJournalVouchersGetQueryParams) ToURLValues() (url.Values, error) {
@@ -55,7 +69,7 @@ func (p ManualJournalVouchersGetQueryParams) ToURLValues() (url.Values, error) {
 	return params, nil
 }
 
-func (r *ManualJournalVouchersGet) QueryParams() QueryParams {
+func (r *ManualJournalVouchersGet) QueryParams() *ManualJournalVouchersGetQueryParams {
 	return r.queryParams
 }
 
